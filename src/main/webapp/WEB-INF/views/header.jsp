@@ -55,12 +55,19 @@
       
       <sec:authorize access="isAuthenticated()">
       <li class="nav-item">
-       <a class="nav-link" href="${pageContext.request.contextPath}/logout">Logout</a>
+       <a class="nav-link" href="${pageContext.request.contextPath}/user/profile">Profile</a>
       </li>
+      <li class="nav-item">
+       <a class="nav-link" href="${pageContext.request.contextPath}/logout">Logout</a>
+      </li>      
       </sec:authorize>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    
+      <a href="${pageContext.request.contextPath}/book/hightolow" class="btn btn-primary text-white">High to Low</a>
+      <a href="${pageContext.request.contextPath}/book/lowtohigh" class="btn btn-primary text-white">Low to High</a>
+    
+    <form class="form-inline my-2 my-lg-0" action="${pageContext.request.contextPath}/book/search" method="post" >
+      <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
   </div>

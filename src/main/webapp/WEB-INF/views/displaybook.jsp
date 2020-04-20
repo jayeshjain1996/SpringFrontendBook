@@ -21,7 +21,7 @@
 				<div class="wrapper row">
 					<div class="preview col-md-6">						
 						<div class="preview-pic tab-content">
-						  <div class="tab-pane active" id="pic-1"><img style="height:400px"   src='<sp:url value="/images/${book.bookname}/${book.bookimage}"></sp:url>' /></div>
+						  <div class="tab-pane active" id="pic-1"><img style="height:350px" src='<sp:url value="/images/${book.bookname}/${book.bookimage}"></sp:url>' /></div>
 						</div>
 						   
 					</div>

@@ -21,12 +21,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.niit.model.Book;
+
 import com.niit.service.BookService;
 
 @Controller
 @RequestMapping("/book")
 public class BookController 
 {
+	String path1;
+	
 	@Autowired
 	BookService bookService;
   
@@ -41,7 +44,7 @@ public class BookController
 	public String addbook(@ModelAttribute("book") Book b,@RequestParam("image") MultipartFile bookimage)
 	{
 		bookService.addBook(b);
-		String path1="C:\\Users\\HP\\Desktop\\JUnit testing\\SpringBookFrontend\\src\\main\\webapp\\WEB-INF\\images\\";
+		path1="C:\\Users\\HP\\Desktop\\JUnit testing\\SpringBookFrontend\\src\\main\\webapp\\WEB-INF\\images\\";
 		Path p=Paths.get(path1+b.getBookname());
 		if (!Files.exists(p))
 		{    
@@ -136,10 +139,29 @@ public class BookController
 	}
 	
 	  @RequestMapping("/delete/{bookid}")
-	  public String delete(@PathVariable("bookid") int bookid)
+	  public String delete(@PathVariable("bookid") int bookid,ModelMap map)
 	  {
-		 bookService.deleteBook(bookid);
-		 return "redirect:/book/display";
+		  Book b=bookService.displayByBookid(bookid);
+		  List<String> images=displayImage(b.getBookname());
+		  String img=b.getBookname()+"\\"+images.get(0);
+		  try 
+		  {
+			  Path p=Paths.get(path1+img);		  
+			  Files.delete(p);
+			  Path p1=Paths.get(path1+b.getBookname());
+			  Files.delete(p1);
+			  System.out.println("Folder deleted successfully");
+		  } 
+		  catch (Exception e) 
+		  {
+			System.out.println(e);
+		  }
+		  
+		  bookService.deleteBook(bookid);
+		 map.addAttribute("msg","Book Deleted Successfully");
+		 map.addAttribute("type","success");
+		 map.addAttribute("pagename","/book/display");
+		 return "popup";
 	  }
 	  
 	  @RequestMapping("/edit/{bookid}")
@@ -155,5 +177,53 @@ public class BookController
 	  {
 		bookService.updateBook(b);
 		return "redirect:/book/display";
+	  }
+	  
+	  @RequestMapping("/hightolow")
+	  public String hightolow(ModelMap map)
+	  {
+		  List<Book> books=new ArrayList<Book>();
+		  for (Book book : bookService.displayHighToLow()) 
+		  {
+			List<String> im=displayImage(book.getBookname());
+			if(!im.isEmpty())
+			book.setBookimage(im.get(0));
+			books.add(book);
+		  }
+		  
+		  map.addAttribute("books",books);
+		  return "displaybooks";
+	  }
+	  
+	  @RequestMapping("/lowtohigh")
+	  public String lowtohigh(ModelMap map)
+	  {
+		  List<Book> books=new ArrayList<Book>();
+		  for (Book book :bookService.displayLowToHigh()) 
+		  {
+			List<String> im=displayImage(book.getBookname());
+			if(!im.isEmpty())
+			book.setBookimage(im.get(0));
+			books.add(book);
+		  }
+		  
+		  map.addAttribute("books",books);
+		  return "displaybooks";
+	  }
+	  
+	  @RequestMapping("/search")
+	  public String search(@RequestParam("search") String search,ModelMap map)
+	  {
+		  List<Book> books=new ArrayList<Book>();
+		  for (Book book :bookService.displayBySearch(search)) 
+		  {
+			List<String> im=displayImage(book.getBookname());
+			if(!im.isEmpty())
+			book.setBookimage(im.get(0));
+			books.add(book);
+		  }
+		  
+		  map.addAttribute("books",books);
+		  return "displaybooks";
 	  }
 }
